@@ -1,62 +1,53 @@
 // motor.js - Constructor Dinámico Modular
-console.log("Motor v2.0: Modo Constructor Activo");
+console.log("Motor v2.1: Sincronizado");
 
-// 1. Diccionario de Componentes (Aquí definiremos cada sección)
 const Componentes = {
   hero: (opt) => `
-    <section class="reveal" style="background-color: ${opt.fondo}; color: ${opt.colorTexto}; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
-      <h1 style="font-size: 3em; margin-bottom: 20px;">${opt.titulo}</h1>
-      <p style="font-size: 1.2em;">${opt.subtitulo}</p>
+    <section class="reveal" style="background-color: ${opt.fondo}; color: ${opt.colorTexto}; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px;">
+      <h1 style="font-size: 3.5rem; margin: 0 0 10px 0; color: inherit;">${opt.titulo}</h1>
+      <p style="font-size: 1.5rem; margin: 0; color: inherit; opacity: 0.9;">${opt.subtitulo}</p>
     </section>
   `,
 
   countdown: (opt) => `
-      <section class="reveal" style="background-color: ${opt.fondo}; color: ${opt.colorTexto}; min-height: 50vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 0;">
-        <h2 style="font-size: 1.5em; margin-bottom: 20px;">${opt.titulo}</h2>
-        <div id="countdown_text" data-fecha="${opt.subtitulo}" style="display: flex; gap: 15px; justify-content: center;">
-          <div class="count-block"> <span id="days">0</span> <br> <span class="label">DIAS</span> </div>
-          <div class="count-block"> <span id="hours">0</span> <br> <span class="label">HORAS</span> </div>
-          <div class="count-block"> <span id="minutes">0</span> <br> <span class="label">MINUTOS</span> </div>
-          <div class="count-block"> <span id="seconds">0</span> <br> <span class="label">SEGUNDOS</span> </div>
-        </div>
-      </section>
-    `,
+    <section class="reveal" style="background-color: ${opt.fondo}; color: ${opt.colorTexto}; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 20px;">
+      <h2 style="font-size: 1.8rem; margin-bottom: 30px; color: inherit;">${opt.titulo}</h2>
+      <div id="countdown_text" data-fecha="${opt.subtitulo}" style="display: flex; gap: 10px; justify-content: center; color: inherit;">
+        <div class="count-block"> <span id="days" style="color: inherit;">0</span> <span class="label">DÍAS</span> </div>
+        <div class="count-block"> <span id="hours" style="color: inherit;">0</span> <span class="label">HS</span> </div>
+        <div class="count-block"> <span id="minutes" style="color: inherit;">0</span> <span class="label">MIN</span> </div>
+        <div class="count-block"> <span id="seconds" style="color: inherit;">0</span> <span class="label">SEG</span> </div>
+      </div>
+    </section>
+  `,
 };
-// 2. Función Principal
+
 async function iniciar() {
   try {
     const res = await fetch("./config.json");
-    if (!res.ok) throw new Error("No se encontró config.json");
+    if (!res.ok) throw new Error("No config");
     const config = await res.json();
-
     const app = document.getElementById("app");
-    app.innerHTML = ""; // Limpiar antes de renderizar
+    app.innerHTML = "";
 
-    // 3. Iteración Mágica: Renderiza en el orden del Array
     if (config.modulos && Array.isArray(config.modulos)) {
       config.modulos.forEach((mod) => {
         if (mod.visible && Componentes[mod.tipo]) {
-          // Ejecuta la función correspondiente según el tipo
           app.innerHTML += Componentes[mod.tipo](mod.opciones);
         }
       });
-    } else {
-      app.innerHTML = "<h1>Configuración no válida</h1>";
     }
 
-    // Esperamos un instante a que el HTML se dibuje en pantalla
+    // Pequeño delay para asegurar que el DOM cargó los colores antes de animar
     setTimeout(() => {
       ejecutarAnimaciones();
       iniciarContador();
-    }, 50);
+    }, 100);
   } catch (e) {
-    console.error("Error en el motor:", e);
-    document.getElementById("app").innerHTML =
-      "<h1>Error al cargar la invitación</h1>";
+    console.error("Error:", e);
   }
 }
 
-// Función simple para manejar el "reveal"
 function ejecutarAnimaciones() {
   const observer = new IntersectionObserver(
     (entries) => {
@@ -72,10 +63,42 @@ function ejecutarAnimaciones() {
 
   document.querySelectorAll(".reveal").forEach((el) => {
     el.style.opacity = "0";
-    el.style.transform = "translateY(30px)";
-    el.style.transition = "all 0.8s ease-out";
+    el.style.transform = "translateY(20px)";
+    el.style.transition = "all 1s ease-out";
     observer.observe(el);
   });
+}
+
+function iniciarContador() {
+  const el = document.getElementById("countdown_text");
+  if (!el) return;
+
+  // Usamos una fecha por defecto si la del input no es válida
+  const targetDate = new Date("March 21, 2026 21:00:00").getTime();
+
+  const intervalo = setInterval(() => {
+    const now = new Date().getTime();
+    const distance = targetDate - now;
+
+    if (distance < 0) {
+      el.innerHTML = "¡YA COMENZÓ!";
+      clearInterval(intervalo);
+      return;
+    }
+
+    document.getElementById("days").textContent = Math.floor(
+      distance / (1000 * 60 * 60 * 24),
+    );
+    document.getElementById("hours").textContent = Math.floor(
+      (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+    );
+    document.getElementById("minutes").textContent = Math.floor(
+      (distance % (1000 * 60 * 60)) / (1000 * 60),
+    );
+    document.getElementById("seconds").textContent = Math.floor(
+      (distance % (1000 * 60)) / 1000,
+    );
+  }, 1000);
 }
 
 window.onload = iniciar;
