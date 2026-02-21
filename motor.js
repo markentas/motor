@@ -1,11 +1,11 @@
-console.log('Motor v2: Cargado');
+console.log('Motor v3: Sincronizado');
 async function iniciar() {
   try {
     const res = await fetch('./config.json');
     const config = await res.json();
     
-    // Busca la sección hero dentro del array de secciones
-    const hero = config.secciones.find(s => s.tipo === 'hero');
+    // Buscamos la sección tipo 'hero' que crea el admin
+    const hero = config.secciones ? config.secciones.find(s => s.tipo === 'hero') : null;
 
     if (hero && hero.datos) {
       document.getElementById('app').innerHTML = \`
