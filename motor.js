@@ -1,38 +1,47 @@
-// motor.js (Versión para GitHub)
+// motor.js (Versión con Detección de Entorno)
 async function iniciarMotor() {
   try {
     const respuesta = await fetch("./config.json");
     const config = await respuesta.json();
     const app = document.getElementById("app");
 
-    // Validar estructura de estilos globales
-    if (config.estilos_globales && config.estilos_globales.color_fondo) {
+    if (config.estilos_globales?.color_fondo) {
       document.body.style.backgroundColor = config.estilos_globales.color_fondo;
     }
 
-    // IMPORTANTE: Tu server actual genera 'secciones'.
-    // Si el motor en GitHub buscaba 'modulos', por eso salía 'undefined'.
     const listaSecciones = config.secciones || [];
+    app.innerHTML = "";
 
-    app.innerHTML = listaSecciones
-      .filter((sec) => sec.visible)
-      .sort((a, b) => a.orden - b.orden)
-      .map((sec) => {
-        if (sec.tipo === "hero" && sec.datos) {
-          return `
-                        <section class="hero-section">
-                            <h1>${sec.datos.titulo || "Sin Título"}</h1>
-                            <p>${sec.datos.frase || ""}</p>
-                        </section>
-                    `;
-        }
-        return "";
-      })
-      .join("");
+    // DETERMINAR RUTA BASE: Local vs GitHub
+    const esLocal =
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1";
+    const rutaBaseModulos = esLocal
+      ? "/motor/modulos/"
+      : "https://cdn.jsdelivr.net/gh/markentas/motor/modulos/";
 
-    console.log("✅ Motor sincronizado con éxito");
+    console.log(
+      `🚀 Cargando módulos desde: ${esLocal ? "ENTORNO LOCAL" : "CDN GITHUB"}`,
+    );
+
+    for (const seccion of listaSecciones
+      .filter((s) => s.visible)
+      .sort((a, b) => a.orden - b.orden)) {
+      try {
+        // Importación dinámica usando la ruta inteligente
+        const rutaModulo = `${rutaBaseModulos}${seccion.tipo}.js`;
+        const modulo = await import(rutaModulo);
+
+        modulo.render(seccion, app);
+      } catch (err) {
+        console.error(`❌ Error en módulo [${seccion.tipo}]:`, err);
+      }
+    }
+
+    console.log("✅ Motor sincronizado correctamente");
   } catch (e) {
-    console.error("❌ Error en motor central:", e);
+    console.error("❌ Error crítico en motor:", e);
   }
 }
+
 window.onload = iniciarMotor;
