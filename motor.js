@@ -44,10 +44,11 @@ async function iniciar() {
       app.innerHTML = "<h1>Configuración no válida</h1>";
     }
 
-    // 4. Disparar efectos visuales post-renderizado
-    ejecutarAnimaciones();
-    // 5. Iniciar Contador
-    iniciarContador();
+    // Esperamos un instante a que el HTML se dibuje en pantalla
+    setTimeout(() => {
+      ejecutarAnimaciones();
+      iniciarContador();
+    }, 50);
   } catch (e) {
     console.error("Error en el motor:", e);
     document.getElementById("app").innerHTML =
