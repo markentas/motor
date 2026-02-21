@@ -9,16 +9,16 @@ async function iniciar() {
     let titulo = "Evento";
     let subtitulo = "";
 
-    // Lógica inteligente para evitar el error de 'undefined'
+    // Lógica flexible para evitar el error 'undefined' de tus capturas
     if (config.modulos && config.modulos.length > 0) {
-      // Formato nuevo: busca el módulo hero
+      // Busca el módulo hero en el nuevo formato del Admin
       const hero = config.modulos.find((m) => m.tipo === "hero");
       if (hero && hero.opciones) {
         titulo = hero.opciones.titulo;
         subtitulo = hero.opciones.subtitulo || "";
       }
     } else if (config.datos) {
-      // Formato viejo: compatibilidad
+      // Compatibilidad con el formato viejo de tus pruebas iniciales
       titulo = config.datos.titulo || "Evento";
     }
 
@@ -33,5 +33,4 @@ async function iniciar() {
       "<h1>Error al cargar invitación</h1>";
   }
 }
-
 window.onload = iniciar;
