@@ -21,7 +21,7 @@ const Componentes = {
         </div>
       </section>
     `,
-
+};
 // 2. Función Principal
 async function iniciar() {
   try {
@@ -99,9 +99,17 @@ function iniciarContador() {
       return;
     }
 
-    document.getElementById("days").textContent = Math.floor(distance / (1000 * 60 * 60 * 24));
-    document.getElementById("hours").textContent = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    document.getElementById("minutes").textContent = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    document.getElementById("seconds").textContent = Math.floor((distance % (1000 * 60)) / 1000);
+    document.getElementById("days").textContent = Math.floor(
+      distance / (1000 * 60 * 60 * 24),
+    );
+    document.getElementById("hours").textContent = Math.floor(
+      (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+    );
+    document.getElementById("minutes").textContent = Math.floor(
+      (distance % (1000 * 60 * 60)) / (1000 * 60),
+    );
+    document.getElementById("seconds").textContent = Math.floor(
+      (distance % (1000 * 60)) / 1000,
+    );
   }, 1000);
 }
