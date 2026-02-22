@@ -1,34 +1,95 @@
-/* motor/estilo.css */
-body {
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css');
+
+* {
     margin: 0;
     padding: 0;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    color: white;
-    transition: background 0.5s ease;
+    box-sizing: border-box;
 }
 
-.hero-section {
-    height: 100vh;
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    color: #fff;
+    background: #0a0a0a;
+    overflow-x: hidden;
+    margin: 0;
+}
+
+section {
+    min-height: 100vh;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    flex-direction: column;
     text-align: center;
+    position: relative;
+    overflow: hidden;
 }
 
-h1 {
-    font-size: 3.5rem;
-    margin-bottom: 10px;
-}
-p {
-    font-size: 1.5rem;
-    opacity: 0.8;
-}
-button {
-    margin-top: 20px;
-    padding: 10px 30px;
-    border: 2px solid white;
-    background: transparent;
-    color: white;
+/* Botón flotante música */
+#btn-musica {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    background: rgba(30, 30, 30, 0.95);
+    border: 2px solid rgba(255,255,255,0.5);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
+    z-index: 1000;
+    font-size: 1.3rem;
+    color: #fff;
+    transition: all 0.3s;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    backdrop-filter: blur(5px);
+}
+
+#btn-musica i {
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+}
+
+#btn-musica:hover {
+    background: rgba(50, 50, 50, 0.95);
+    transform: scale(1.1);
+    border-color: #fff;
+}
+
+#btn-musica:active {
+    transform: scale(0.95);
+}
+
+/* Animaciones reveal */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Utilitarios */
+.text-center { text-align: center; }
+.mb-10 { margin-bottom: 10px; }
+.mb-20 { margin-bottom: 20px; }
+.mb-30 { margin-bottom: 30px; }
+.mb-40 { margin-bottom: 40px; }
+.p-20 { padding: 20px; }
+
+/* Responsive */
+@media (max-width: 600px) {
+    section {
+        min-height: 50vh;
+    }
 }
