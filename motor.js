@@ -101,7 +101,6 @@ async function iniciarMotor() {
       
       const seccionEl = document.createElement('section');
       seccionEl.id = 'seccion-' + (index + 1);
-      seccionEl.style.minHeight = '100vh';
       seccionEl.style.position = 'relative';
       seccionEl.style.display = 'flex';
       seccionEl.style.flexDirection = 'column';
@@ -109,6 +108,10 @@ async function iniciarMotor() {
       seccionEl.style.alignItems = 'center';
       
       aplicarFondo(seccionEl, seccion.estilos || {});
+      
+      // Aplicar altura DESPUÉS de aplicarFondo para que no se sobrescriba
+      const altura = seccion.estilos?.fondo?.altura || '100vh';
+      seccionEl.style.minHeight = altura;
       
       const contenido = document.createElement('div');
       contenido.style.cssText = 'position:relative;z-index:2;width:100%;max-width:600px;padding:20px;text-align:center;';
