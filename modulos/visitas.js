@@ -8,6 +8,9 @@ export function render(seccion, contenedor, helpers) {
   const btnVer = estilos.boton_ver || {};
   const modal = estilos.modal || {};
   
+  const SUPABASE_URL = 'https://duwqmbkrbjldinzckpkx.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_F498KHXcrmfpbZUFpWc8Bg_pmPYmWSx';
+  
   const container = document.createElement('div');
   container.style.padding = '20px';
   container.style.textAlign = 'center';
@@ -25,8 +28,7 @@ export function render(seccion, contenedor, helpers) {
     fraseEl.textContent = datos.frase;
     container.appendChild(fraseEl);
   }
-  
-  // Formulario
+
   const formEl = document.createElement('div');
   formEl.style.cssText = 'max-width:300px;margin:0 auto;';
   
@@ -98,88 +100,38 @@ export function render(seccion, contenedor, helpers) {
     letter-spacing:1px;
   `;
   btnVerEl.textContent = datos.boton_ver || 'VER SALUDOS';
-  btnVerEl.onclick = () => abrirModalMensajes(datos);
+  btnVerEl.onclick = () => window.abrirModalMensajes(datos);
   formEl.appendChild(btnVerEl);
   
   container.appendChild(formEl);
   contenedor.appendChild(container);
   
-  // Crear modal de mensajes
-  crearModalMensajes(modal, datos);
-  
-  // Funciones globales
-  async function enviarMensaje(datosSeccion, formEl, btn) {
-    const nombre = document.getElementById('visitas-nombre').value.trim();
-    const mensaje = document.getElementById('visitas-mensaje').value.trim();
-    
-    if (!nombre) {
-      alert('Por favor ingresa tu nombre');
-      return;
-    }
-    
-    btn.textContent = 'ENVIANDO...';
-    btn.disabled = true;
-    
-    try {
-      // Obtener el slug desde la última parte de la URL
-      const pathParts = window.location.pathname.split('/').filter(s => s && s !== 'index.html');
-      const clientesIndex = pathParts.indexOf('clientes');
-      const slug = clientesIndex >= 0 && pathParts[clientesIndex + 1] 
-        ? pathParts[clientesIndex + 1] 
-        : (pathParts[pathParts.length - 1] || 'demo');
-      
-      const response = await fetch('/api/visitas', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          cliente_slug: slug,
-          nombre: nombre,
-          mensaje: mensaje
-        })
-      });
-      
-      const result = await response.json();
-      
-      if (result.success || response.ok) {
-        // Mostrar mensaje de éxito nicer
-        const successMsg = document.createElement('div');
-        successMsg.style.cssText = 'background:#28a745;color:#fff;padding:10px;border-radius:4px;margin-bottom:15px;font-size:0.9rem;';
-        successMsg.textContent = '¡Gracias por tu saludo!';
-        formEl.insertBefore(successMsg, formEl.firstChild);
-        
-        document.getElementById('visitas-nombre').value = '';
-        document.getElementById('visitas-mensaje').value = '';
-        
-        setTimeout(() => {
-          successMsg.remove();
-        }, 3000);
-        
-        cargarMensajes(datosSeccion);
-      } else {
-        alert('Error al enviar. Intenta de nuevo.');
-      }
-    } catch (e) {
-      alert('Error de conexión. Intenta de nuevo.');
-    }
-    
-    btn.textContent = datos.boton_enviar || 'ENVIAR';
-    btn.disabled = false;
+  function getSlug() {
+    const pathParts = window.location.pathname.split('/').filter(s => s && s !== 'index.html');
+    const clientesIndex = pathParts.indexOf('clientes');
+    return clientesIndex >= 0 && pathParts[clientesIndex + 1] 
+      ? pathParts[clientesIndex + 1] 
+      : (pathParts[pathParts.length - 1] || 'demo');
   }
   
-  window.cargarMensajes = async function(datosSeccion) {
+  async function cargarMensajes() {
     const lista = document.getElementById('visitas-lista');
     if (!lista) return;
     
     lista.innerHTML = '<p style="color:#888;text-align:center;padding:20px;">Cargando...</p>';
     
     try {
-    const pathParts = window.location.pathname.split('/').filter(s => s && s !== 'index.html');
-    const clientesIndex = pathParts.indexOf('clientes');
-    const slug = clientesIndex >= 0 && pathParts[clientesIndex + 1] 
-      ? pathParts[clientesIndex + 1] 
-      : (pathParts[pathParts.length - 1] || 'demo');
+      const slug = getSlug();
       
-      const response = await fetch(`/api/visitas/${slug}`);
+      const response = await fetch(
+        `${SUPABASE_URL}/rest/v1/mensajes?cliente_slug=eq.${slug}&order=created_at.desc`,
+        {
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`
+          }
+        }
+      );
       
       if (!response.ok) {
         lista.innerHTML = '<p style="color:#f55;text-align:center;">Error al cargar mensajes</p>';
@@ -201,15 +153,71 @@ export function render(seccion, contenedor, helpers) {
         </div>
       `).join('');
     } catch (e) {
+      console.error('Error cargando mensajes:', e);
       lista.innerHTML = '<p style="color:#f55;text-align:center;">Error al cargar mensajes</p>';
     }
-  };
-}
-
-function crearModalMensajes(modal, datos) {
-  // Remover modal existente si hay
-  const existing = document.getElementById('modal-visitas');
-  if (existing) existing.remove();
+  }
+  
+  window.cargarMensajes = cargarMensajes;
+  
+  async function enviarMensaje(datosSeccion, formEl, btn) {
+    const nombre = document.getElementById('visitas-nombre').value.trim();
+    const mensaje = document.getElementById('visitas-mensaje').value.trim();
+    
+    if (!nombre) {
+      alert('Por favor ingresa tu nombre');
+      return;
+    }
+    
+    btn.textContent = 'ENVIANDO...';
+    btn.disabled = true;
+    
+    try {
+      const slug = getSlug();
+      
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/mensajes`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          cliente_slug: slug,
+          nombre: nombre,
+          mensaje: mensaje || ''
+        })
+      });
+      
+      if (response.ok) {
+        const successMsg = document.createElement('div');
+        successMsg.style.cssText = 'background:#28a745;color:#fff;padding:10px;border-radius:4px;margin-bottom:15px;font-size:0.9rem;';
+        successMsg.textContent = '¡Gracias por tu saludo!';
+        formEl.insertBefore(successMsg, formEl.firstChild);
+        
+        document.getElementById('visitas-nombre').value = '';
+        document.getElementById('visitas-mensaje').value = '';
+        
+        setTimeout(() => {
+          successMsg.remove();
+        }, 3000);
+        
+        cargarMensajes();
+      } else {
+        alert('Error al enviar. Intenta de nuevo.');
+      }
+    } catch (e) {
+      console.error('Error enviando mensaje:', e);
+      alert('Error de conexión. Intenta de nuevo.');
+    }
+    
+    btn.textContent = datos.boton_enviar || 'ENVIAR';
+    btn.disabled = false;
+  }
+  
+  const existingModal = document.getElementById('modal-visitas');
+  if (existingModal) existingModal.remove();
   
   const modalEl = document.createElement('div');
   modalEl.id = 'modal-visitas';
@@ -278,10 +286,7 @@ function crearModalMensajes(modal, datos) {
   document.body.appendChild(modalEl);
   
   window.abrirModalMensajes = function(datosSeccion) {
-    const modal = document.getElementById('modal-visitas');
-    if (modal) {
-      modal.style.display = 'flex';
-      window.cargarMensajes(datosSeccion);
-    }
+    modalEl.style.display = 'flex';
+    cargarMensajes();
   };
 }
