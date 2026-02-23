@@ -101,6 +101,7 @@ async function iniciarMotor() {
       
       const seccionEl = document.createElement('section');
       seccionEl.id = 'seccion-' + (index + 1);
+      seccionEl.dataset.tipo = seccion.tipo;
       seccionEl.style.position = 'relative';
       seccionEl.style.display = 'flex';
       seccionEl.style.flexDirection = 'column';

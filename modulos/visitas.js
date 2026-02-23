@@ -169,6 +169,11 @@ export function render(seccion, contenedor, helpers) {
       return;
     }
     
+    if (!mensaje) {
+      alert('Por favor ingresa un mensaje');
+      return;
+    }
+    
     btn.textContent = 'ENVIANDO...';
     btn.disabled = true;
     
@@ -186,7 +191,7 @@ export function render(seccion, contenedor, helpers) {
         body: JSON.stringify({
           cliente_slug: slug,
           nombre: nombre,
-          mensaje: mensaje || ''
+          mensaje: mensaje
         })
       });
       

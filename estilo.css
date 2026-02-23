@@ -93,3 +93,32 @@ section {
         min-height: 50vh;
     }
 }
+
+/* Estilos para impresión */
+@media print {
+    /* Ocultar módulos de galería y visitas */
+    section[data-tipo="galeria"],
+    section[data-tipo="visitas"],
+    #btn-musica {
+        display: none !important;
+    }
+    
+    /* Mantener fondo oscuro */
+    body {
+        background-color: #0a0a0a !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    
+    /* Las secciones ocupan toda la página en impresión */
+    section {
+        min-height: 100vh !important;
+        page-break-after: auto;
+        padding: 40px 20px;
+    }
+    
+    /* Ocultar elementos interactivos */
+    button, .boton-subir, #galeria-upload-btn {
+        display: none !important;
+    }
+}
