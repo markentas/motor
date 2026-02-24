@@ -15,7 +15,7 @@ export function render(seccion, contenedor, helpers) {
   
   if (ico.mostrar !== false) {
     const iconEl = document.createElement('i');
-    iconEl.className = `fas ${icono}`;
+    iconEl.className = `fab ${icono}`;
     iconEl.style.cssText = `font-size:${ico.size || '40px'};color:${ico.color || '#fff'};margin-bottom:20px;display:inline-block;`;
     container.appendChild(iconEl);
   }
