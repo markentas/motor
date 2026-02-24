@@ -4,15 +4,29 @@ export function render(seccion, contenedor, helpers) {
   const ft = estilos.fuente_titulo || {};
   const fl = estilos.fuente_lugar || {};
   const fd = estilos.fuente_direccion || {};
-  const ico = estilos.icono || {};
+  const iconoEstilos = estilos.icono || {};
   const boton = estilos.boton || {};
-  
-  const icono = datos.icono || 'fa-map-marker-alt';
   
   let html = `<div style="padding:20px;">`;
   
-  if (ico.mostrar !== false) {
-    html += `<i class="fas ${icono}" style="font-size:${ico.size || '40px'};color:${ico.color || '#fff'};margin-bottom:20px;display:block;"></i>`;
+  // Renderizar icono si existe y esta habilitado
+  const mostrarIcono = iconoEstilos.mostrar !== false;
+  const iconoDatos = datos.icono;
+
+  if (mostrarIcono && iconoDatos) {
+    const color = iconoEstilos.color || '#ffffff';
+    const size = iconoEstilos.size || '40px';
+    
+    let iconoHtml = '';
+    
+    if (iconoDatos.includes('.jpg') || iconoDatos.includes('.jpeg') || iconoDatos.includes('.gif') || iconoDatos.includes('.png') || iconoDatos.includes('img/')) {
+      iconoHtml = `<img src="${iconoDatos}" alt="icono" style="width:${size};height:${size};object-fit:contain;margin-bottom:20px;display:block;margin-left:auto;margin-right:auto;">`;
+    } else {
+      const prefix = iconoDatos.startsWith('fa-') && !['fa-instagram', 'fa-facebook', 'fa-twitter', 'fa-tiktok', 'fa-whatsapp', 'fa-youtube', 'fa-telegram'].includes(iconoDatos) ? 'fas' : 'fab';
+      iconoHtml = `<i class="${prefix} ${iconoDatos}" style="font-size:${size};color:${color};margin-bottom:20px;display:block;"></i>`;
+    }
+    
+    html += iconoHtml;
   }
   
   if (datos.titulo) {
