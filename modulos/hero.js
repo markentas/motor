@@ -4,6 +4,31 @@ export function render(seccion, contenedor, helpers) {
 
   let html = '<div style="padding:20px;">';
 
+  // Renderizar icono si existe y esta habilitado
+  const iconoEstilos = estilos.icono || {};
+  const mostrarIcono = iconoEstilos.mostrar !== false;
+  const iconoDatos = datos.icono;
+
+  if (mostrarIcono && iconoDatos) {
+    const color = iconoEstilos.color || '#ffffff';
+    const size = iconoEstilos.size || '40px';
+    
+    let iconoHtml = '';
+    
+    // Determinar si es una imagen o un icono FA
+    if (iconoDatos.includes('.jpg') || iconoDatos.includes('.jpeg') || iconoDatos.includes('.gif') || iconoDatos.includes('.png') || iconoDatos.includes('img/')) {
+      // Es una imagen
+      const imgUrl = iconoDatos.startsWith('http') ? iconoDatos : iconoDatos;
+      iconoHtml = `<img src="${imgUrl}" alt="icono" style="width:${size};height:${size};object-fit:contain;margin-bottom:20px;display:block;margin-left:auto;margin-right:auto;">`;
+    } else {
+      // Es un icono FA
+      const prefix = iconoDatos.startsWith('fa-') && !['fa-instagram', 'fa-facebook', 'fa-twitter', 'fa-tiktok', 'fa-whatsapp', 'fa-youtube', 'fa-telegram'].includes(iconoDatos) ? 'fas' : 'fab';
+      iconoHtml = `<i class="${prefix} ${iconoDatos}" style="font-size:${size};color:${color};margin-bottom:20px;display:block;"></i>`;
+    }
+    
+    html += iconoHtml;
+  }
+
   if (estilos.fuente_titulo) {
     const ft = estilos.fuente_titulo;
     html += `<h1 style="color:${ft.color};font-size:${ft.size};font-family:${ft.family};font-weight:${ft.weight || 'normal'};margin-bottom:20px;text-shadow:2px 2px 4px rgba(0,0,0,0.5);">${datos.titulo || ''}</h1>`;
