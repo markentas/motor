@@ -128,15 +128,22 @@ async function iniciarMotor() {
       
       const contenido = document.createElement('div');
       contenido.style.cssText = 'position:relative;z-index:2;width:100%;max-width:600px;padding:20px;text-align:center;';
-      seccionEl.appendChild(contenido);
+      
+      const renderTarget = seccion.tipo === 'slider' ? seccionEl : contenido;
+      const esSliderEnSeccion = seccion.tipo === 'slider';
+      
+      if (seccion.tipo !== 'slider') {
+        seccionEl.appendChild(contenido);
+      }
       
       const rutaModulo = `${modulosRuta}${seccion.tipo}.js`;
       try {
         const modulo = await import(rutaModulo);
         if (modulo.render) {
-          modulo.render(seccion, contenido, { 
+          modulo.render(seccion, renderTarget, { 
             scrollANext: () => scrollANextSection(seccionEl),
-            reproducirMusica: reproducirMusica
+            reproducirMusica: reproducirMusica,
+            esSliderEnSeccion
           });
         }
         
