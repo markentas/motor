@@ -50,7 +50,8 @@ function aplicarFondo(seccionEl, estilos) {
   
   if (fondo.tipo === 'imagen' && fondo.imagen) {
     const urlImagen = fondo.imagen.includes('/') ? fondo.imagen : `img/${fondo.imagen}`;
-    css += `background-image: url('${urlImagen}'); background-size: cover; background-position: center;`;
+    const posicion = fondo.imagen_posicion || 'center';
+    css += `background-image: url('${urlImagen}'); background-size: cover; background-position: ${posicion};`;
   } else {
     css += `background-color: ${fondo.color || '#0a0a0a'};`;
   }
@@ -59,9 +60,20 @@ function aplicarFondo(seccionEl, estilos) {
   
   if (fondo.tipo === 'imagen' && fondo.overlay_opacidad > 0) {
     const overlay = document.createElement('div');
-    overlay.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,' + fondo.overlay_opacidad + ');z-index:1;';
+    const overlayColor = fondo.overlay_color || '#000000';
+    const rgb = hexToRgb(overlayColor);
+    overlay.style.cssText = `position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(${rgb.r},${rgb.g},${rgb.b},${fondo.overlay_opacidad});z-index:1;`;
     seccionEl.appendChild(overlay);
   }
+}
+
+function hexToRgb(hex) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : { r: 0, g: 0, b: 0 };
 }
 
 function scrollANextSection(currentSection) {
