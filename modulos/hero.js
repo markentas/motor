@@ -98,7 +98,9 @@ export function render(seccion, contenedor, helpers) {
       border:2px solid ${eb.color_borde || '#fff'};
       padding:${eb.padding || '12px 30px'};
       border-radius:${eb.radio || '4px'};
-      font-size:1rem;
+      font-family:${eb.fuente || 'Montserrat, sans-serif'};
+      font-size:${eb.size || '1rem'};
+      font-weight:${eb.weight || 'normal'};
       cursor:pointer;
       text-transform:uppercase;
       letter-spacing:2px;

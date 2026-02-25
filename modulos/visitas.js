@@ -117,7 +117,9 @@ export function render(seccion, contenedor, helpers) {
     border:2px solid ${btnEnviar.color_borde || '#c64600'};
     border-radius:${inp.radio || '4px'};
     cursor:pointer;
-    font-size:0.9rem;
+    font-family:${btnEnviar.fuente || 'Montserrat, sans-serif'};
+    font-size:${btnEnviar.size || '0.9rem'};
+    font-weight:${btnEnviar.weight || 'normal'};
     text-transform:uppercase;
     letter-spacing:1px;
     margin-bottom:10px;
@@ -135,7 +137,9 @@ export function render(seccion, contenedor, helpers) {
     border:2px solid ${btnVer.color_borde || '#fff'};
     border-radius:${inp.radio || '4px'};
     cursor:pointer;
-    font-size:0.9rem;
+    font-family:${btnVer.fuente || 'Montserrat, sans-serif'};
+    font-size:${btnVer.size || '0.9rem'};
+    font-weight:${btnVer.weight || 'normal'};
     text-transform:uppercase;
     letter-spacing:1px;
   `;

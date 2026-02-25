@@ -72,7 +72,9 @@ export function render(seccion, contenedor, helpers) {
       padding:${boton.padding || '12px 24px'};
       text-transform:uppercase;
       letter-spacing:1px;
-      font-size:0.9rem;
+      font-family:${boton.fuente || 'Montserrat, sans-serif'};
+      font-size:${boton.size || '0.9rem'};
+      font-weight:${boton.weight || 'normal'};
       cursor:pointer;
       transition:all 0.3s;
       ${marginBoton}

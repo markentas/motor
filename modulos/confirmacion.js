@@ -82,7 +82,9 @@ export function render(seccion, contenedor, helpers) {
       text-decoration:none;
       text-transform:uppercase;
       letter-spacing:1px;
-      font-size:0.9rem;
+      font-family:${boton.fuente || 'Montserrat, sans-serif'};
+      font-size:${boton.size || '0.9rem'};
+      font-weight:${boton.weight || 'normal'};
       transition:all 0.3s;
     `;
     btnEl.textContent = datos.texto_boton || 'CONFIRMAR';

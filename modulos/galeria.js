@@ -6,6 +6,7 @@ export function render(seccion, contenedor, helpers) {
   const grid = estilos.grid || {};
   const imgEstilos = estilos.imagenes || {};
   const iconoEstilos = estilos.icono || {};
+  const botonSubir = estilos.boton_subir || {};
   
   // Función local para parsear margin
   const parseMargin = (marginStr) => {
@@ -72,14 +73,15 @@ export function render(seccion, contenedor, helpers) {
   const uploadBtn = document.createElement('button');
   uploadBtn.id = 'galeria-upload-btn';
   uploadBtn.style.cssText = `
-    padding: 14px 40px;
-    background: #c64600;
-    color: #fff;
-    border: none;
+    padding: ${botonSubir.padding || '14px 40px'};
+    background: ${botonSubir.color_fondo || '#c64600'};
+    color: ${botonSubir.color_texto || '#fff'};
+    border: 2px solid ${botonSubir.color_borde || '#c64600'};
     border-radius: 30px;
     cursor: pointer;
-    font-size: 1rem;
-    font-weight: 600;
+    font-family: ${botonSubir.fuente || 'Montserrat, sans-serif'};
+    font-size: ${botonSubir.size || '1rem'};
+    font-weight: ${botonSubir.weight || '600'};
     text-transform: uppercase;
     letter-spacing: 2px;
     margin-bottom: 30px;
