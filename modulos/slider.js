@@ -3,7 +3,7 @@ export function render(seccion, contenedor, helpers = {}) {
   const esSliderEnSeccion = helpers.esSliderEnSeccion || false;
   
   const imagenes = (datos.imagenes || []).map(img => {
-    return typeof img === 'string' ? { ruta: img, orientacion: 'cover' } : img;
+    return typeof img === 'string' ? { ruta: img, orientacion: 'cover', proporcion: '' } : { proporcion: '', ...img };
   });
   const autoplay = datos.autoplay !== false;
   const intervalo = datos.intervalo || 3000;
@@ -62,6 +62,7 @@ export function render(seccion, contenedor, helpers = {}) {
     img.src = imgData.ruta;
     
     const orientacion = imgData.orientacion || objectFit;
+    const proporcion = imgData.proporcion;
     
     if (orientacion === 'background') {
       img.style.width = '100vw';
@@ -71,6 +72,10 @@ export function render(seccion, contenedor, helpers = {}) {
       img.style.width = '100%';
       img.style.height = '100%';
       img.style.objectFit = orientacion;
+    }
+    
+    if (proporcion) {
+      imgContainer.style.aspectRatio = proporcion;
     }
     
     img.style.transform = `rotate(${imgData.rotacion || 0}deg)`;
