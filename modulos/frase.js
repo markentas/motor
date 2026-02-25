@@ -2,6 +2,7 @@ export function render(seccion, contenedor, helpers) {
   const { datos, estilos } = seccion;
   const ft = estilos.fuente_titulo || {};
   const iconoEstilos = estilos.icono || {};
+  const lineasEstilos = estilos.lineas || {};
   
   // Función local para parsear margin
   const parseMargin = (marginStr) => {
@@ -20,6 +21,11 @@ export function render(seccion, contenedor, helpers) {
   
   // Margin para icono
   const marginIcono = iconoEstilos.margin ? `margin:${parseMargin(iconoEstilos.margin)};` : 'margin-bottom:20px;';
+  
+  // Configuración de líneas
+  const mostrarLineas = lineasEstilos.mostrar !== false;
+  const colorLineas = lineasEstilos.color || 'rgba(255,255,255,0.3)';
+  const grosorLineas = lineasEstilos.grosor || '1px';
   
   let html = `<div style="padding:20px;">`;
   
@@ -45,12 +51,9 @@ export function render(seccion, contenedor, helpers) {
   
   if (datos.titulo) {
     const marginTitulo = ft.margin ? `margin:${parseMargin(ft.margin)};` : '';
+    const borderStyle = mostrarLineas ? `border-top:${grosorLineas} solid ${colorLineas};border-bottom:${grosorLineas} solid ${colorLineas};` : '';
     html += `
-      <div style="
-        border-top:1px solid rgba(255,255,255,0.3);
-        border-bottom:1px solid rgba(255,255,255,0.3);
-        padding:30px 10px;
-      ">
+      <div style="${borderStyle}padding:30px 10px;">
         <p style="
           ${marginTitulo}
           color:${ft.color};
