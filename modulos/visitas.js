@@ -9,6 +9,22 @@ export function render(seccion, contenedor, helpers) {
   const modal = estilos.modal || {};
   const iconoEstilos = estilos.icono || {};
   
+  // Función local para parsear margin
+  const parseMargin = (marginStr) => {
+    if (!marginStr) return '';
+    const parts = marginStr.trim().split(/\s+/);
+    if (parts.length === 1) return `${parts[0]} ${parts[0]} ${parts[0]} ${parts[0]}`;
+    if (parts.length === 2) return `${parts[0]} ${parts[1]} ${parts[0]} ${parts[1]}`;
+    if (parts.length === 3) return `${parts[0]} ${parts[1]} ${parts[2]} ${parts[1]}`;
+    if (parts.length >= 4) return `${parts[0]} ${parts[1]} ${parts[2]} ${parts[3]}`;
+    return '';
+  };
+  
+  // Margins
+  const marginIcono = iconoEstilos.margin ? `margin:${parseMargin(iconoEstilos.margin)};` : 'margin-bottom:20px;';
+  const marginTitulo = ft.margin ? `margin:${parseMargin(ft.margin)};` : 'margin-bottom:15px;';
+  const marginFrase = ff.margin ? `margin:${parseMargin(ff.margin)};` : 'margin-bottom:25px;';
+  
   const SUPABASE_URL = 'https://duwqmbkrbjldinzckpkx.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_F498KHXcrmfpbZUFpWc8Bg_pmPYmWSx';
   
@@ -28,27 +44,27 @@ export function render(seccion, contenedor, helpers) {
       const imgEl = document.createElement('img');
       imgEl.src = iconoDatos;
       imgEl.alt = 'icono';
-      imgEl.style.cssText = `width:${size};height:${size};object-fit:contain;margin-bottom:20px;display:block;margin-left:auto;margin-right:auto;`;
+      imgEl.style.cssText = `${marginIcono}width:${size};height:${size};object-fit:contain;display:block;margin-left:auto;margin-right:auto;`;
       container.appendChild(imgEl);
     } else {
       const prefix = iconoDatos.startsWith('fa-') && !['fa-instagram', 'fa-facebook', 'fa-twitter', 'fa-tiktok', 'fa-whatsapp', 'fa-youtube', 'fa-telegram'].includes(iconoDatos) ? 'fas' : 'fab';
       const iconEl = document.createElement('i');
       iconEl.className = `${prefix} ${iconoDatos}`;
-      iconEl.style.cssText = `font-size:${size};color:${color};margin-bottom:20px;display:inline-block;`;
+      iconEl.style.cssText = `${marginIcono}font-size:${size};color:${color};display:inline-block;`;
       container.appendChild(iconEl);
     }
   }
   
   if (datos.titulo) {
     const titleEl = document.createElement('h2');
-    titleEl.style.cssText = `color:${ft.color};font-size:${ft.size};font-family:${ft.family};font-weight:${ft.weight || 'normal'};margin-bottom:15px;`;
+    titleEl.style.cssText = `${marginTitulo}color:${ft.color};font-size:${ft.size};font-family:${ft.family};font-weight:${ft.weight || 'normal'};`;
     titleEl.textContent = datos.titulo;
     container.appendChild(titleEl);
   }
   
   if (datos.frase) {
     const fraseEl = document.createElement('p');
-    fraseEl.style.cssText = `color:${ff.color};font-size:${ff.size};font-family:${ff.family};font-weight:${ff.weight || 'normal'};margin-bottom:25px;`;
+    fraseEl.style.cssText = `${marginFrase}color:${ff.color};font-size:${ff.size};font-family:${ff.family};font-weight:${ff.weight || 'normal'};`;
     fraseEl.textContent = datos.frase;
     container.appendChild(fraseEl);
   }

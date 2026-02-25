@@ -7,6 +7,24 @@ export function render(seccion, contenedor, helpers) {
   const iconoEstilos = estilos.icono || {};
   const boton = estilos.boton || {};
   
+  // Función local para parsear margin
+  const parseMargin = (marginStr) => {
+    if (!marginStr) return '';
+    const parts = marginStr.trim().split(/\s+/);
+    if (parts.length === 1) return `${parts[0]} ${parts[0]} ${parts[0]} ${parts[0]}`;
+    if (parts.length === 2) return `${parts[0]} ${parts[1]} ${parts[0]} ${parts[1]}`;
+    if (parts.length === 3) return `${parts[0]} ${parts[1]} ${parts[2]} ${parts[1]}`;
+    if (parts.length >= 4) return `${parts[0]} ${parts[1]} ${parts[2]} ${parts[3]}`;
+    return '';
+  };
+  
+  // Margins
+  const marginIcono = iconoEstilos.margin ? `margin:${parseMargin(iconoEstilos.margin)};` : 'margin-bottom:20px;';
+  const marginTitulo = ft.margin ? `margin:${parseMargin(ft.margin)};` : 'margin-bottom:20px;';
+  const marginLugar = fl.margin ? `margin:${parseMargin(fl.margin)};` : 'margin:5px 0;';
+  const marginDireccion = fd.margin ? `margin:${parseMargin(fd.margin)};` : 'margin:5px 0;';
+  const marginBoton = boton.margin ? `margin:${parseMargin(boton.margin)};` : 'margin-top:20px;';
+  
   let html = `<div style="padding:20px;">`;
   
   // Renderizar icono si existe y esta habilitado
@@ -20,32 +38,32 @@ export function render(seccion, contenedor, helpers) {
     let iconoHtml = '';
     
     if (iconoDatos.includes('.jpg') || iconoDatos.includes('.jpeg') || iconoDatos.includes('.gif') || iconoDatos.includes('.png') || iconoDatos.includes('img/')) {
-      iconoHtml = `<img src="${iconoDatos}" alt="icono" style="width:${size};height:${size};object-fit:contain;margin-bottom:20px;display:block;margin-left:auto;margin-right:auto;">`;
+      iconoHtml = `<img src="${iconoDatos}" alt="icono" style="${marginIcono}width:${size};height:${size};object-fit:contain;display:block;margin-left:auto;margin-right:auto;">`;
     } else {
       const prefix = iconoDatos.startsWith('fa-') && !['fa-instagram', 'fa-facebook', 'fa-twitter', 'fa-tiktok', 'fa-whatsapp', 'fa-youtube', 'fa-telegram'].includes(iconoDatos) ? 'fas' : 'fab';
-      iconoHtml = `<i class="${prefix} ${iconoDatos}" style="font-size:${size};color:${color};margin-bottom:20px;display:block;"></i>`;
+      iconoHtml = `<i class="${prefix} ${iconoDatos}" style="${marginIcono}font-size:${size};color:${color};display:block;"></i>`;
     }
     
     html += iconoHtml;
   }
   
   if (datos.titulo) {
-    html += `<h2 style="color:${ft.color};font-size:${ft.size};font-family:${ft.family};font-weight:${ft.weight || 'normal'};margin-bottom:20px;">${datos.titulo}</h2>`;
+    html += `<h2 style="${marginTitulo}color:${ft.color};font-size:${ft.size};font-family:${ft.family};font-weight:${ft.weight || 'normal'};">${datos.titulo}</h2>`;
   }
   
   if (datos.lugar) {
-    html += `<p style="color:${fl.color};font-size:${fl.size};font-family:${fl.family};font-weight:${fl.weight || 'normal'};margin:5px 0;font-weight:bold;">${datos.lugar}</p>`;
+    html += `<p style="${marginLugar}color:${fl.color};font-size:${fl.size};font-family:${fl.family};font-weight:bold;">${datos.lugar}</p>`;
   }
   
   if (datos.direccion) {
-    html += `<p style="color:${fd.color};font-size:${fd.size};font-family:${fd.family};font-weight:${fd.weight || 'normal'};margin:5px 0;">${datos.direccion}</p>`;
+    html += `<p style="${marginDireccion}color:${fd.color};font-size:${fd.size};font-family:${fd.family};font-weight:${fd.weight || 'normal'};">${datos.direccion}</p>`;
   }
   
   if (datos.link_maps) {
     html += `
       <a href="${datos.link_maps}" target="_blank" style="
         display:inline-block;
-        margin-top:20px;
+        ${marginBoton}
         color:${boton.color_texto || '#fff'};
         background:${boton.color_fondo || 'transparent'};
         border:2px solid ${boton.color_borde || '#fff'};

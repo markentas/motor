@@ -1,6 +1,58 @@
 let audioGlobal = null;
 let musicaIniciada = false;
 
+// Función helper para parsear margin CSS (disponible globalmente para todos los módulos)
+function parseMarginCSS(marginStr) {
+    if (!marginStr) return '';
+    const parts = marginStr.trim().split(/\s+/);
+    if (parts.length === 1) {
+      return `${parts[0]} ${parts[0]} ${parts[0]} ${parts[0]}`;
+    } else if (parts.length === 2) {
+      return `${parts[0]} ${parts[1]} ${parts[0]} ${parts[1]}`;
+    } else if (parts.length === 3) {
+      return `${parts[0]} ${parts[1]} ${parts[2]} ${parts[1]}`;
+    } else if (parts.length >= 4) {
+      return `${parts[0]} ${parts[1]} ${parts[2]} ${parts[3]}`;
+    }
+    return '';
+}
+
+// Función helper para construir estilos con margin automático
+// Uso: buildStyle({ color: '#fff', size: '20px', margin: '10px 0 20px 0' })
+// Retorna: "margin: 10px 0 20px 0; color: #fff; font-size: 20px;"
+function buildStyle(estilos, opciones = {}) {
+    if (!estilos) return '';
+    let css = '';
+    
+    // Si tiene margin, agregarlo primero
+    if (estilos.margin) {
+        const m = parseMarginCSS(estilos.margin);
+        if (m) css += `margin: ${m}; `;
+    }
+    
+    // Agregar otros estilos
+    Object.keys(estilos).forEach(key => {
+        if (key === 'margin') return; // ya procesado
+        const valor = estilos[key];
+        if (valor !== undefined && valor !== null && valor !== '') {
+            css += `${key}: ${valor}; `;
+        }
+    });
+    
+    return css;
+}
+
+// Función helper para crear estilo inline con margin
+// Uso: styleWithMargin(estilos, 'color:#fff;font-size:20px;')
+function styleWithMargin(estilos, baseStyle = '') {
+    let style = baseStyle;
+    if (estilos?.margin) {
+        const m = parseMarginCSS(estilos.margin);
+        if (m) style = `margin: ${m}; ` + style;
+    }
+    return style;
+}
+
 function reproducirMusica() {
   if (audioGlobal && audioGlobal.paused) {
     audioGlobal.play().catch(() => {});
