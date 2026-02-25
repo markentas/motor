@@ -178,8 +178,17 @@ async function iniciarMotor() {
       const altura = seccion.estilos?.fondo?.altura || '100vh';
       seccionEl.style.minHeight = altura;
       
+      // Aplicar ancho del contenido al elemento section directamente
+      const anchoContenido = seccion.estilos?.fondo?.ancho_contenido || '600px';
+      if (anchoContenido && anchoContenido !== '100%') {
+        seccionEl.style.maxWidth = anchoContenido;
+        seccionEl.style.margin = '0 auto';
+        seccionEl.style.left = '0';
+        seccionEl.style.right = '0';
+      }
+      
       const contenido = document.createElement('div');
-      contenido.style.cssText = 'position:relative;z-index:2;width:100%;max-width:600px;padding:20px;text-align:center;';
+      contenido.style.cssText = 'position:relative;z-index:2;width:100%;max-width:100%;padding:20px;text-align:center;';
       
       const renderTarget = seccion.tipo === 'slider' ? seccionEl : contenido;
       const esSliderEnSeccion = seccion.tipo === 'slider';
