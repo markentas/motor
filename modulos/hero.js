@@ -39,6 +39,11 @@ export function render(seccion, contenedor, helpers) {
     html += `<p style="color:${ff.color};font-size:${ff.size};font-family:${ff.family};font-weight:${ff.weight || 'normal'};margin-bottom:40px;">${datos.frase}</p>`;
   }
 
+  if (datos.frase_2) {
+    const ff2 = estilos.fuente_frase_2 || {};
+    html += `<p style="color:${ff2.color};font-size:${ff2.size};font-family:${ff2.family};font-weight:${ff2.weight || 'normal'};margin-bottom:40px;">${datos.frase_2}</p>`;
+  }
+
   const eb = estilos.estilo_boton || {};
   html += `<button id="btn-ingresar" onclick="handleIngresar()" style="
     background:${eb.color_fondo || 'transparent'};
