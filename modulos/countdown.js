@@ -10,6 +10,9 @@ export function render(seccion, contenedor, helpers) {
   const ft = estilos.fuente_titulo || {};
   const fn = estilos.fuente_numeros || {};
   const fl = estilos.fuente_labels || {};
+  const fc = estilos.circulo || {};
+  
+  const diseno = estilos.diseno || 'basico';
   
   // Función local para parsear margin
   const parseMargin = (marginStr) => {
@@ -59,26 +62,11 @@ export function render(seccion, contenedor, helpers) {
   if (yaPaso) {
     html += `<div id="countdown-container"><span style="font-size:${fn.size};color:${fn.color};font-family:${fn.family};">¡LLEGÓ EL MOMENTO!</span></div>`;
   } else {
-    html += `
-      <div id="countdown-container" style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;">
-        <div class="count-block">
-          <span class="count-num" style="display:block;font-size:${fn.size};font-family:${fn.family};font-weight:${fn.weight || 'normal'};color:${fn.color};" data-unit="days">0</span>
-          <span class="count-label" style="display:block;font-size:${fl.size};font-family:${fl.family};font-weight:${fl.weight || 'normal'};color:${fl.color};margin-top:5px;text-transform:uppercase;letter-spacing:2px;">Días</span>
-        </div>
-        <div class="count-block">
-          <span class="count-num" style="display:block;font-size:${fn.size};font-family:${fn.family};font-weight:${fn.weight || 'normal'};color:${fn.color};" data-unit="hours">0</span>
-          <span class="count-label" style="display:block;font-size:${fl.size};font-family:${fl.family};font-weight:${fl.weight || 'normal'};color:${fl.color};margin-top:5px;text-transform:uppercase;letter-spacing:2px;">Horas</span>
-        </div>
-        <div class="count-block">
-          <span class="count-num" style="display:block;font-size:${fn.size};font-family:${fn.family};font-weight:${fn.weight || 'normal'};color:${fn.color};" data-unit="minutes">0</span>
-          <span class="count-label" style="display:block;font-size:${fl.size};font-family:${fl.family};font-weight:${fl.weight || 'normal'};color:${fl.color};margin-top:5px;text-transform:uppercase;letter-spacing:2px;">Min</span>
-        </div>
-        <div class="count-block">
-          <span class="count-num" style="display:block;font-size:${fn.size};font-family:${fn.family};font-weight:${fn.weight || 'normal'};color:${fn.color};" data-unit="seconds">0</span>
-          <span class="count-label" style="display:block;font-size:${fl.size};font-family:${fl.family};font-weight:${fl.weight || 'normal'};color:${fl.color};margin-top:5px;text-transform:uppercase;letter-spacing:2px;">Seg</span>
-        </div>
-      </div>
-    `;
+    if (diseno === 'circulo') {
+      html += renderCirculoDesign(fn, fl, fc);
+    } else {
+      html += renderBasicoDesign(fn, fl);
+    }
   }
   
   html += `</div>`;
@@ -106,13 +94,148 @@ export function render(seccion, contenedor, helpers) {
     
     const container = contenedor.querySelector('#countdown-container');
     if (container) {
-      container.querySelector('[data-unit="days"]').textContent = days;
-      container.querySelector('[data-unit="hours"]').textContent = hours;
-      container.querySelector('[data-unit="minutes"]').textContent = minutes;
-      container.querySelector('[data-unit="seconds"]').textContent = seconds;
+      if (diseno === 'circulo') {
+        updateCirculoDesign(container, days, hours, minutes, seconds, fc);
+      } else {
+        container.querySelector('[data-unit="days"]').textContent = days;
+        container.querySelector('[data-unit="hours"]').textContent = hours;
+        container.querySelector('[data-unit="minutes"]').textContent = minutes;
+        container.querySelector('[data-unit="seconds"]').textContent = seconds;
+      }
     }
   }
   
   updateCountdown();
   const interval = setInterval(updateCountdown, 1000);
+}
+
+function renderBasicoDesign(fn, fl) {
+  return `
+    <div id="countdown-container" style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;">
+      <div class="count-block">
+        <span class="count-num" style="display:block;font-size:${fn.size};font-family:${fn.family};font-weight:${fn.weight || 'normal'};color:${fn.color};" data-unit="days">0</span>
+        <span class="count-label" style="display:block;font-size:${fl.size};font-family:${fl.family};font-weight:${fl.weight || 'normal'};color:${fl.color};margin-top:5px;text-transform:uppercase;letter-spacing:2px;">Días</span>
+      </div>
+      <div class="count-block">
+        <span class="count-num" style="display:block;font-size:${fn.size};font-family:${fn.family};font-weight:${fn.weight || 'normal'};color:${fn.color};" data-unit="hours">0</span>
+        <span class="count-label" style="display:block;font-size:${fl.size};font-family:${fl.family};font-weight:${fl.weight || 'normal'};color:${fl.color};margin-top:5px;text-transform:uppercase;letter-spacing:2px;">Horas</span>
+      </div>
+      <div class="count-block">
+        <span class="count-num" style="display:block;font-size:${fn.size};font-family:${fn.family};font-weight:${fn.weight || 'normal'};color:${fn.color};" data-unit="minutes">0</span>
+        <span class="count-label" style="display:block;font-size:${fl.size};font-family:${fl.family};font-weight:${fl.weight || 'normal'};color:${fl.color};margin-top:5px;text-transform:uppercase;letter-spacing:2px;">Min</span>
+      </div>
+      <div class="count-block">
+        <span class="count-num" style="display:block;font-size:${fn.size};font-family:${fn.family};font-weight:${fn.weight || 'normal'};color:${fn.color};" data-unit="seconds">0</span>
+        <span class="count-label" style="display:block;font-size:${fl.size};font-family:${fl.family};font-weight:${fl.weight || 'normal'};color:${fl.color};margin-top:5px;text-transform:uppercase;letter-spacing:2px;">Seg</span>
+      </div>
+    </div>
+  `;
+}
+
+function renderCirculoDesign(fn, fl, fc) {
+  const size = fc.tamano || '100px';
+  const colorActivo = fc.color_activo || '#009B9D';
+  const colorInactivo = fc.color_inactivo || '#dddddd';
+  const thickness = fc.grosor || '3px';
+  const gap = fc.separacion || '12px';
+  const padding = fc.padding || '10px';
+  
+  const fontSize = fn.size || '2rem';
+  const fontColor = fn.color || '#ffffff';
+  const fontFamily = fn.family || 'Montserrat, sans-serif';
+  const fontWeight = fn.weight || '500';
+  
+  const labelSize = fl.size || '0.7rem';
+  const labelColor = fl.color || '#888888';
+  const labelFamily = fl.family || 'Montserrat, sans-serif';
+  const labelWeight = fl.weight || '400';
+  
+  const viewBoxW = 120;
+  const viewBoxH = 150;
+  const radius = 35;
+  const centerX = 60;
+  const centerY = 55;
+  const circumference = 2 * Math.PI * radius;
+  
+  return `
+    <div id="countdown-container" style="display:flex;justify-content:center;gap:${gap};flex-wrap:wrap;padding:${padding};width:100%;box-sizing:border-box;">
+      <div class="count-block" data-unit="days" data-max="31">
+        <svg width="${size}" height="${size}" viewBox="0 0 ${viewBoxW} ${viewBoxH}" xmlns="http://www.w3.org/2000/svg">
+          <g>
+            <circle r="${radius}" cx="${centerX}" cy="${centerY}" fill="transparent" stroke="${colorInactivo}" stroke-width="${thickness}"></circle>
+            <circle class="progress-circle" r="${radius}" cx="${centerX}" cy="${centerY}" fill="transparent" stroke="${colorActivo}" stroke-width="${thickness}" stroke-linecap="round" stroke-dasharray="0,${circumference}" transform="rotate(-90 ${centerX} ${centerY})"></circle>
+            <text class="count-num" text-anchor="middle" x="${centerX}" y="${centerY + 12}" font-size="${fontSize}" font-weight="${fontWeight}" fill="${fontColor}" font-family="${fontFamily}">0</text>
+          </g>
+          <g>
+            <text class="count-label" text-anchor="middle" x="${centerX}" y="${viewBoxH - 5}" font-size="${labelSize}" font-weight="${labelWeight}" fill="${labelColor}" font-family="${labelFamily}">Días</text>
+          </g>
+        </svg>
+      </div>
+      <div class="count-block" data-unit="hours" data-max="24">
+        <svg width="${size}" height="${size}" viewBox="0 0 ${viewBoxW} ${viewBoxH}" xmlns="http://www.w3.org/2000/svg">
+          <g>
+            <circle r="${radius}" cx="${centerX}" cy="${centerY}" fill="transparent" stroke="${colorInactivo}" stroke-width="${thickness}"></circle>
+            <circle class="progress-circle" r="${radius}" cx="${centerX}" cy="${centerY}" fill="transparent" stroke="${colorActivo}" stroke-width="${thickness}" stroke-linecap="round" stroke-dasharray="0,${circumference}" transform="rotate(-90 ${centerX} ${centerY})"></circle>
+            <text class="count-num" text-anchor="middle" x="${centerX}" y="${centerY + 12}" font-size="${fontSize}" font-weight="${fontWeight}" fill="${fontColor}" font-family="${fontFamily}">0</text>
+          </g>
+          <g>
+            <text class="count-label" text-anchor="middle" x="${centerX}" y="${viewBoxH - 5}" font-size="${labelSize}" font-weight="${labelWeight}" fill="${labelColor}" font-family="${labelFamily}">Horas</text>
+          </g>
+        </svg>
+      </div>
+      <div class="count-block" data-unit="minutes" data-max="60">
+        <svg width="${size}" height="${size}" viewBox="0 0 ${viewBoxW} ${viewBoxH}" xmlns="http://www.w3.org/2000/svg">
+          <g>
+            <circle r="${radius}" cx="${centerX}" cy="${centerY}" fill="transparent" stroke="${colorInactivo}" stroke-width="${thickness}"></circle>
+            <circle class="progress-circle" r="${radius}" cx="${centerX}" cy="${centerY}" fill="transparent" stroke="${colorActivo}" stroke-width="${thickness}" stroke-linecap="round" stroke-dasharray="0,${circumference}" transform="rotate(-90 ${centerX} ${centerY})"></circle>
+            <text class="count-num" text-anchor="middle" x="${centerX}" y="${centerY + 12}" font-size="${fontSize}" font-weight="${fontWeight}" fill="${fontColor}" font-family="${fontFamily}">0</text>
+          </g>
+          <g>
+            <text class="count-label" text-anchor="middle" x="${centerX}" y="${viewBoxH - 5}" font-size="${labelSize}" font-weight="${labelWeight}" fill="${labelColor}" font-family="${labelFamily}">Min</text>
+          </g>
+        </svg>
+      </div>
+      <div class="count-block" data-unit="seconds" data-max="60">
+        <svg width="${size}" height="${size}" viewBox="0 0 ${viewBoxW} ${viewBoxH}" xmlns="http://www.w3.org/2000/svg">
+          <g>
+            <circle r="${radius}" cx="${centerX}" cy="${centerY}" fill="transparent" stroke="${colorInactivo}" stroke-width="${thickness}"></circle>
+            <circle class="progress-circle" r="${radius}" cx="${centerX}" cy="${centerY}" fill="transparent" stroke="${colorActivo}" stroke-width="${thickness}" stroke-linecap="round" stroke-dasharray="0,${circumference}" transform="rotate(-90 ${centerX} ${centerY})"></circle>
+            <text class="count-num" text-anchor="middle" x="${centerX}" y="${centerY + 12}" font-size="${fontSize}" font-weight="${fontWeight}" fill="${fontColor}" font-family="${fontFamily}">0</text>
+          </g>
+          <g>
+            <text class="count-label" text-anchor="middle" x="${centerX}" y="${viewBoxH - 5}" font-size="${labelSize}" font-weight="${labelWeight}" fill="${labelColor}" font-family="${labelFamily}">Seg</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  `;
+}
+
+function updateCirculoDesign(container, days, hours, minutes, seconds, fc) {
+  const radius = 35;
+  const circumference = 2 * Math.PI * radius;
+  
+  const units = [
+    { unit: 'days', value: days, max: 31 },
+    { unit: 'hours', value: hours, max: 24 },
+    { unit: 'minutes', value: minutes, max: 60 },
+    { unit: 'seconds', value: seconds, max: 60 }
+  ];
+  
+  units.forEach(({ unit, value, max }) => {
+    const block = container.querySelector(`[data-unit="${unit}"]`);
+    if (!block) return;
+    
+    const circle = block.querySelector('.progress-circle');
+    const text = block.querySelector('.count-num');
+    
+    if (circle) {
+      const dashValue = (value / max) * circumference;
+      circle.setAttribute('stroke-dasharray', `${dashValue},${circumference}`);
+    }
+    
+    if (text) {
+      text.textContent = value < 10 ? `0${value}` : value;
+    }
+  });
 }
