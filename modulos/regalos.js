@@ -1,3 +1,5 @@
+import { parseMargin } from './util.js';
+
 export function render(seccion, contenedor, helpers) {
   const { datos, estilos } = seccion;
   
@@ -6,15 +8,6 @@ export function render(seccion, contenedor, helpers) {
   const iconoEstilos = estilos.icono || {};
   const boton = estilos.boton || {};
   const modal = estilos.modal || {};
-  
-  const parseMargin = (marginStr) => {
-    if (!marginStr) return '';
-    const values = marginStr.trim().split(/\s+/);
-    if (values.length === 1) return `${values[0]} ${values[0]} ${values[0]} ${values[0]}`;
-    if (values.length === 2) return `${values[0]} ${values[1]} ${values[0]} ${values[1]}`;
-    if (values.length === 3) return `${values[0]} ${values[1]} ${values[2]} ${values[1]}`;
-    return `${values[0]} ${values[1]} ${values[2]} ${values[3]}`;
-  };
   
   const mostrarBoton = datos.mostrar_boton !== false;
   const tieneDatos = datos.alias || datos.nombre_cuenta || datos.titular;

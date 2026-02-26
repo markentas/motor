@@ -1,3 +1,5 @@
+import { parseMargin } from './util.js';
+
 export function render(seccion, contenedor, helpers) {
   const { datos, estilos } = seccion;
   
@@ -13,17 +15,6 @@ export function render(seccion, contenedor, helpers) {
   const fc = estilos.circulo || {};
   
   const diseno = estilos.diseno || 'basico';
-  
-  // Función local para parsear margin
-  const parseMargin = (marginStr) => {
-    if (!marginStr) return '';
-    const parts = marginStr.trim().split(/\s+/);
-    if (parts.length === 1) return `${parts[0]} ${parts[0]} ${parts[0]} ${parts[0]}`;
-    if (parts.length === 2) return `${parts[0]} ${parts[1]} ${parts[0]} ${parts[1]}`;
-    if (parts.length === 3) return `${parts[0]} ${parts[1]} ${parts[2]} ${parts[1]}`;
-    if (parts.length >= 4) return `${parts[0]} ${parts[1]} ${parts[2]} ${parts[3]}`;
-    return '';
-  };
   
   // Margins
   const iconoEstilos = estilos.icono || {};
@@ -95,7 +86,7 @@ export function render(seccion, contenedor, helpers) {
     const container = contenedor.querySelector('#countdown-container');
     if (container) {
       if (diseno === 'circulo') {
-        updateCirculoDesign(container, days, hours, minutes, seconds, fc);
+        updateCirculoDesign(container, days, hours, minutes, seconds);
       } else {
         container.querySelector('[data-unit="days"]').textContent = days;
         container.querySelector('[data-unit="hours"]').textContent = hours;
@@ -211,7 +202,7 @@ function renderCirculoDesign(fn, fl, fc) {
   `;
 }
 
-function updateCirculoDesign(container, days, hours, minutes, seconds, fc) {
+function updateCirculoDesign(container, days, hours, minutes, seconds) {
   const radius = 35;
   const circumference = 2 * Math.PI * radius;
   
